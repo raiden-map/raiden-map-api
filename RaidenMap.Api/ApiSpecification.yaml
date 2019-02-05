@@ -1,0 +1,230 @@
+﻿openapi: 3.0.0
+
+info:
+  title: Raiden Map API
+  description: The [Raiden Map](https://raidenmap.io) API
+  version: 0.1.0
+
+servers:
+  - url: https://raiden-map-functions.azurewebsites.net/v1
+    description: Production Azure function app
+
+components:
+  schemas:
+  
+    Channel:
+      type: object
+      properties:
+        channelId: 
+          type: number
+        state:
+          type: string
+        lastStateChangeBlock:
+          type: number
+        settleTimeout:
+          type: number
+        firstParticipant:
+          $ref: '#/components/schemas/Participant'
+        secondParticipant:
+          $ref: '#/components/schemas/Participant'
+  
+    Endpoint:
+      type: object
+      properties:
+        ethAddress:
+          type: string
+        ipAddress:
+          type: string
+        state: 
+          type: string
+        latitude: 
+          type: number
+        longitude: 
+          type: number
+          
+    Error:
+      type: string
+    
+    Participant:
+      type: object
+      properties:
+        ethAddress: 
+          type: string
+        deposit: 
+          type: number
+        withdrawnAmount:
+          type: number
+        wantsToClose: 
+          type: boolean 
+    
+    RaidenState:
+      type: object
+      properties:
+        states: 
+          type: array
+          items:
+            $ref: '#/components/schemas/RaidenAggregate'
+        tokenNetworks: 
+          type: array
+          items:
+            $ref: '#/components/schemas/TokenNetworkAggregate'
+        endpoints: 
+          type: array
+          items: 
+            $ref: '#/components/schemas/Endpoint'
+        blockNumber:
+          type: integer
+        twitter:
+          type: string
+      required:
+        - states
+        - tokenNetworks
+        - endpoints
+        - blockNumber
+        - twitter
+    
+    RaidenAggregate:
+      type: object
+      properties:
+        tokenNetworksCount: 
+          type: number
+        usersCount: 
+          type: number
+        timestamp: 
+          type: number
+        blockNumber: 
+          type: number
+        btcValue: 
+          type: number
+        ethValue: 
+          type: number
+            
+    Token:
+      type: object
+      properties:
+        name: 
+          type: string
+        tag: 
+          type: string
+        imageUrl: 
+          type: string
+          nullable: true
+        value: 
+          type: number
+        changeSinceYesterday: 
+          type: number
+        marketCap: 
+          type: number
+        volume: 
+          type: number
+        holders: 
+          type: number
+        timestamp:
+          type: number
+          
+    TokenNetwork:
+      type: object
+      properties:
+        tokenNetworkAddress: 
+          type: string
+        tokenNetworkStates: 
+          type: array
+          items:
+            $ref: '#/components/schemas/TokenNetworkAggregate'
+        creationBlockNumber: 
+          type: number
+        creationTimestamp: 
+          type: number
+        token: 
+          $ref: '#/components/schemas/Token'
+        channels: 
+          type: array
+          items:
+            $ref: '#/components/schemas/Channel'
+        endpoints: 
+          type: array
+          items:
+            $ref: '#/components/schemas/Endpoint'
+        twitter: 
+          type: string
+            
+    TokenNetworkAggregate:
+      type: object
+      properties:
+        token:
+          $ref: '#/components/schemas/Token'
+        tokenNetworkAddress: 
+          type: string
+        timestamp: 
+          type: number
+        channelsCount: 
+          type: number
+        openChannels: 
+          type: number
+        closedChannels: 
+          type: number
+        settledChannels: 
+          type: number
+        avgChannelDeposit: 
+          type: number
+        totalDeposit: 
+          type: number
+        users:
+          type: number
+        blockNumber: 
+          type: number
+        
+        
+  responses:
+    NotFound:
+      description: >
+        Default response when some requested resource
+        can't be found on the server.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+        
+paths:
+  /raiden:
+    get:
+      summary: Returns data to provide the home page visualization.
+      responses:
+        '200':
+          description: > 
+            A JSON Object containing the current state of raiden 
+            plus some time series data to populate graphs.
+          content:
+            application/json:
+             schema:
+              $ref: '#/components/schemas/RaidenState'
+              
+  /tokenNetwork/{ethAddress}:
+    get:
+      summary: Returns data to provide the home page visualization.
+      parameters: 
+        - name: ethAddress
+          in: path
+          description: Ethereum Address of the Token Network Contract
+          required: true
+          schema:
+            type: string
+          
+      responses:
+        '200':
+          description: > 
+            Returns a JSON Object containing the current state of the specified
+            Token Network plus some time series data to populate graphs.
+          content:
+            application/json:
+             schema:
+              $ref: '#/components/schemas/TokenNetwork'
+              
+        '404':
+          description: >
+            The specified EthAddress doesn't correspond to a tracked
+            token network.
+          content:
+            application/json:
+             schema:
+              $ref: '#/components/schemas/Error'
