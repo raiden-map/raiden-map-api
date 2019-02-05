@@ -1,6 +1,6 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
 
-namespace RaidenMap.Api.models
+namespace RaidenMap.Api.Models
 {
     public class Endpoint
     {

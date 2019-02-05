@@ -5,7 +5,7 @@ using System.Globalization;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace RaidenMap.Api.models
+namespace RaidenMap.Api.Models
 {
     public partial class Raiden
     {
