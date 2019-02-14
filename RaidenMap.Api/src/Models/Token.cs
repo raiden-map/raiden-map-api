@@ -16,17 +16,29 @@ namespace RaidenMap.Api.Models
         [BsonElement("value")]
         public long Value { get; set; }
 
-        [BsonElement("changeSinceYesterday")]
-        public double ChangeSinceYesterday { get; set; }
+        [BsonElement("priceChangeDayUsd")]
+        public double PriceChangeDayUsd { get; set; }
+
+        [BsonElement("priceChangeWeekUsd")]
+        public double PriceChangeWeekUsd { get; set; }
+
+        [BsonElement("priceChangeDayEth")]
+        public double PriceChangeDayEth { get; set; }
+
+        [BsonElement("priceChangeWeekEth")]
+        public double PriceChangeWeekEth { get; set; }
+
+        [BsonElement("priceChangeDayBtc")]
+        public double PriceChangeDayBtc { get; set; }
+
+        [BsonElement("priceChangeWeekBtc")]
+        public double PriceChangeWeekBtc { get; set; }
 
         [BsonElement("marketCap")]
         public double MarketCap { get; set; }
 
         [BsonElement("volume")]
         public long Volume { get; set; }
-
-        [BsonElement("holders")]
-        public long Holders { get; set; }
 
         [BsonElement("timestamp")]
         public long Timestamp { get; set; }

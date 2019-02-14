@@ -111,13 +111,21 @@ components:
           nullable: true
         value: 
           type: number
-        changeSinceYesterday: 
-          type: number
+        priceChangeDayUsd:
+		  type: number
+		priceChangeWeekUsd:
+		  type: number
+		priceChangeDayEth:
+		  type: number
+		priceChangeWeekEth:
+		  type: number
+		priceChangeDayBtc:
+		  type: number
+		priceChangeWeekBtc:
+		  type: number
         marketCap: 
           type: number
-        volume: 
-          type: number
-        holders: 
+        volumeDay: 
           type: number
         timestamp:
           type: number
