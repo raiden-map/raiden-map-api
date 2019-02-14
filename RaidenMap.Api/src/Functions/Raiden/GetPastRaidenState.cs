@@ -22,9 +22,6 @@ namespace RaidenMap.Api
         private static string RaidenCollection =>
             System.Environment.GetEnvironmentVariable(Constants.RaidenCollectionName);
 
-        private static string AggregateCollection =>
-            System.Environment.GetEnvironmentVariable(Constants.RaidenAggregateCollectionName);
-
         private static string MongoDbConnectionString =>
             System.Environment.GetEnvironmentVariable("MongoDbConnectionString");
 
