@@ -125,7 +125,7 @@ components:
 		  type: number
         marketCap: 
           type: number
-        volumeDay: 
+        volume: 
           type: number
         timestamp:
           type: number

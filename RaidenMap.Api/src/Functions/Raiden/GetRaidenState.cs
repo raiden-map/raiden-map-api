@@ -7,13 +7,17 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
 using RaidenMap.Api.Models;
+using RaidenMap.Api.src.Common;
 
 namespace RaidenMap.Api
 {
     public static class GetRaidenState
     {
-        private const string DatabaseName = "raiden-map";
-        private const string CollectionName = "raiden-states";
+        private static string DatabaseName =>
+            System.Environment.GetEnvironmentVariable(Constants.DatabaseName);
+
+        private static string CollectionName =>
+            System.Environment.GetEnvironmentVariable(Constants.RaidenCollectionName);
 
         private static string MongoDbConnectionString =>
             System.Environment.GetEnvironmentVariable("MongoDbConnectionString");
