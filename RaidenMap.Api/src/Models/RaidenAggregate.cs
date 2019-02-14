@@ -31,6 +31,6 @@ namespace RaidenMap.Api.Models
         public string Id { get; set; }
 
         [BsonElement("tokenNetworksChanges")]
-        public List<TokenNetworkAggregate> TokenNetworkChanges { get; set; }
+        public List<TokenNetworkAggregate> TokenNetworkChanges { get; set; } = new List<TokenNetworkAggregate>();
     }
 }

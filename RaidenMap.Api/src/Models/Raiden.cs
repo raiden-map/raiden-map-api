@@ -23,13 +23,13 @@ namespace RaidenMap.Api.Models
         public Uri Twitter { get; set; }
 
         [BsonElement("states")]
-        public List<RaidenAggregate> States { get; set; }
+        public List<RaidenAggregate> States { get; set; } = new List<RaidenAggregate>();
 
         [BsonElement("tokenNetworks")]
-        public List<TokenNetworkAggregate> TokenNetworks { get; set; }
+        public List<TokenNetworkAggregate> TokenNetworks { get; set; } = new List<TokenNetworkAggregate>();
 
         [BsonElement("endpoints")]
-        public List<Endpoint> Endpoints { get; set; }
+        public List<Endpoint> Endpoints { get; set; } = new List<Endpoint>();
 
         [BsonElement("id")]
         public string Id { get; set; }
