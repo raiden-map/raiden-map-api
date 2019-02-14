@@ -5,7 +5,7 @@ namespace RaidenMap.Api.Models
     public class Endpoint
     {
         [BsonElement("ethAddress")]
-        public long EthAddress { get; set; }
+        public string EthAddress { get; set; }
 
         [BsonElement("ipAddress")]
         public string IpAddress { get; set; }

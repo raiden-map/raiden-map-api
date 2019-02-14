@@ -1,9 +1,14 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
+﻿using System.Collections.Generic;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace RaidenMap.Api.Models
 {
     public class RaidenAggregate
     {
+        [BsonId]
+        public ObjectId MongoId { get; set; }
+
         [BsonElement("tokenNetworksCount")]
         public long TokenNetworksCount { get; set; }
 
@@ -21,5 +26,11 @@ namespace RaidenMap.Api.Models
 
         [BsonElement("ethValue")]
         public long EthValue { get; set; }
+
+        [BsonElement("id")]
+        public string Id { get; set; }
+
+        [BsonElement("tokenNetworksChanges")]
+        public List<TokenNetworkAggregate> TokenNetworkChanges { get; set; }
     }
 }

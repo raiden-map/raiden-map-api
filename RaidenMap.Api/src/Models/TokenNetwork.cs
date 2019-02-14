@@ -1,10 +1,13 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Bson;
 using System.Collections.Generic;
 
 namespace RaidenMap.Api.Models
 {
     public class TokenNetwork
     {
+        [BsonId]
+        public ObjectId MongoId { get; set; }
 
         [BsonElement("tokenNetworkAddress")]
         public string TokenNetworkAddress { get; set; }
@@ -29,6 +32,9 @@ namespace RaidenMap.Api.Models
 
         [BsonElement("twitter")]
         public string Twitter { get; set; }
+
+        [BsonElement("id")]
+        public string Id { get; set; }
 
     }
 

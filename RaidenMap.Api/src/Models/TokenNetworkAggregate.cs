@@ -8,7 +8,7 @@ namespace RaidenMap.Api.Models
         public Token Token { get; set; }
 
         [BsonElement("tokenNetworkAddress")]
-        public long TokenNetworkAddress { get; set; }
+        public string TokenNetworkAddress { get; set; }
 
         [BsonElement("timestamp")]
         public long Timestamp { get; set; }
