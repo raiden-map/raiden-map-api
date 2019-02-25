@@ -134,7 +134,7 @@ components:
         timestamp:
           type: number
           
-    TokenNetwork:
+    TokenNetworkState:
       type: object
       properties:
         tokenNetworkAddress: 
@@ -231,7 +231,7 @@ paths:
           content:
             application/json:
              schema:
-              $ref: '#/components/schemas/TokenNetwork'
+              $ref: '#/components/schemas/TokenNetworkState'
               
         '404':
           description: >
