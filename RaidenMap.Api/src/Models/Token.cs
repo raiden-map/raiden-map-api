@@ -13,8 +13,14 @@ namespace RaidenMap.Api.Models
         [BsonElement("imageUrl")]
         public string ImageUrl { get; set; }
 
+        [BsonElement("valueUsd")]
+        public long ValueUsd { get; set; }
+
         [BsonElement("value")]
-        public long Value { get; set; }
+        public long ValueEth { get; set; }
+
+        [BsonElement("valueBtc")]
+        public long ValueBtc { get; set; }
 
         [BsonElement("priceChangeDayUsd")]
         public double PriceChangeDayUsd { get; set; }

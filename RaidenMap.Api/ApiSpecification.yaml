@@ -109,7 +109,11 @@ components:
         imageUrl: 
           type: string
           nullable: true
-        value: 
+        valueUsd: 
+          type: number
+        valueEth:
+          type: number
+        valueBtc:
           type: number
         priceChangeDayUsd:
 		  type: number
