@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using MongoDB.Bson;
+using System;
 
 namespace RaidenMap.Api
 {
@@ -22,6 +23,9 @@ namespace RaidenMap.Api
         private static string RaidenCollection =>
             System.Environment.GetEnvironmentVariable(Constants.RaidenCollectionName);
 
+        private static string RaidenAggregateCollection =>
+            System.Environment.GetEnvironmentVariable(Constants.RaidenAggregateCollectionName);
+
         private static string MongoDbConnectionString =>
             System.Environment.GetEnvironmentVariable("MongoDbConnectionString");
 
@@ -31,13 +35,19 @@ namespace RaidenMap.Api
             long timestamp,
             ILogger log)
         {
+
             var client = new MongoClient(MongoDbConnectionString);
 
+            log.LogInformation($"{DateTime.UtcNow} INFO Retrievieng Nearest State.");
             var (nearestRaidenState, states) = await RetrieveNearestState(timestamp, client);
 
             if (RaidenHelpers.TimestampsAreClose(nearestRaidenState.Timestamp, timestamp))
+            {
+                log.LogInformation($"{DateTime.UtcNow} INFO A near enough state was already available.");
                 return new OkObjectResult(nearestRaidenState);
+            }
 
+            log.LogInformation($"{DateTime.UtcNow} INFO Computing Delta.");
             var (delta, aggregates) =
                 await RetrieveDelta(
                     nearestRaidenState.Timestamp,
@@ -67,9 +77,11 @@ namespace RaidenMap.Api
 
             nearestRaidenState.MongoId = new ObjectId();
 
+            log.LogInformation($"{DateTime.UtcNow} INFO Inserting newly computed state in database");
             // Could run in a separate Task
             await states.InsertOneAsync(nearestRaidenState);
 
+            log.LogInformation($"{DateTime.UtcNow} INFO Returning computed state.");
             return new OkObjectResult(nearestRaidenState);
         }
 
@@ -100,7 +112,7 @@ namespace RaidenMap.Api
             var raidenAggregates =
                 client
                     .GetDatabase(DatabaseName)
-                    .GetCollection<RaidenAggregate>(RaidenCollection);
+                    .GetCollection<RaidenAggregate>(RaidenAggregateCollection);
 
             var filter = new FilterDefinitionBuilder<RaidenAggregate>()
                 .Where(agg => agg.Timestamp >= fromTimestamp && agg.Timestamp <= toTimestamp);
