@@ -74,8 +74,8 @@ components:
             $ref: '#/components/schemas/Endpoint'
         blockNumber:
           type: number
-		timestamp:
-		  type: number
+        timestamp:
+          type: number
         twitter:
           type: string
     
@@ -94,10 +94,10 @@ components:
           type: number
         ethValue: 
           type: number
-		tokenNetworksChanges:
-		  type: array
-		  items:
-		    $ref: '#/components/schemas/TokenNetworkAggregate'
+        tokenNetworksChanges:
+          type: array
+          items:
+            $ref: '#/components/schemas/TokenNetworkAggregate'
             
     Token:
       type: object
@@ -116,17 +116,17 @@ components:
         valueBtc:
           type: number
         priceChangeDayUsd:
-		  type: number
-		priceChangeWeekUsd:
-		  type: number
-		priceChangeDayEth:
-		  type: number
-		priceChangeWeekEth:
-		  type: number
-		priceChangeDayBtc:
-		  type: number
-		priceChangeWeekBtc:
-		  type: number
+          type: number
+        priceChangeWeekUsd:
+          type: number
+        priceChangeDayEth:
+          type: number
+        priceChangeWeekEth:
+          type: number
+        priceChangeDayBtc:
+          type: number
+        priceChangeWeekBtc:
+          type: number
         marketCap: 
           type: number
         volume: 
@@ -159,8 +159,8 @@ components:
             $ref: '#/components/schemas/Endpoint'
         twitter: 
           type: string
-		  nullable: true
-            
+        nullable: true
+
     TokenNetworkAggregate:
       type: object
       properties:
@@ -186,8 +186,8 @@ components:
           type: number
         blockNumber: 
           type: number
-        
-        
+
+
   responses:
     NotFound:
       description: >
@@ -196,8 +196,8 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Error'
-        
+            $ref: '#/components/schemas/Error'   
+            
 paths:
   /raiden:
     get:
