@@ -235,10 +235,31 @@ paths:
             application/json:
              schema:
               $ref: '#/components/schemas/RaidenState'
-              
-  /tokenNetwork/{ethAddress}:
+  
+  /raiden/{timestamp}:
     get:
       summary: Returns data to provide the home page visualization.
+      parameters:
+        - name: timestamp
+          in: path
+          description: >
+            Point in time to look for past Raiden's state
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: > 
+            A JSON Object containing the state (at the requested timestamp) of raiden 
+            plus some time series data to populate graphs.
+          content:
+            application/json:
+             schema:
+              $ref: '#/components/schemas/RaidenState'
+  
+  /tokenNetwork/{ethAddress}:
+    get:
+      summary: Returns data to provide the TokenNetwork page visualization.
       parameters: 
         - name: ethAddress
           in: path
@@ -251,6 +272,44 @@ paths:
         '200':
           description: > 
             Returns a JSON Object containing the current state of the specified
+            Token Network plus some time series data to populate graphs.
+          content:
+            application/json:
+             schema:
+              $ref: '#/components/schemas/TokenNetworkState'
+              
+        '404':
+          description: >
+            The specified EthAddress doesn't correspond to a tracked
+            token network.
+          content:
+            application/json:
+             schema:
+              $ref: '#/components/schemas/Error'
+
+  /tokenNetwork/{ethAddress}/{timestamp}:
+    get:
+      summary: Returns data to provide the home page visualization.
+      parameters: 
+        - name: ethAddress
+          in: path
+          description: >
+            Ethereum Address of the Token Network Contract
+          required: true
+          schema:
+            type: string
+        - name: timestamp
+          in: path
+          description: >
+            Point in time to look for past TokenNetwork's state
+          required: true
+          schema:
+            type: number
+          
+      responses:
+        '200':
+          description: > 
+            Returns a JSON Object containing the state (at the requested timestamp) of the specified
             Token Network plus some time series data to populate graphs.
           content:
             application/json:
