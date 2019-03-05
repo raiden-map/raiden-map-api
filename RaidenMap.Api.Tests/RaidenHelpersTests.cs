@@ -1,4 +1,4 @@
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using RaidenMap.Api.Models;
 using RaidenMap.Api.Utility;
 using System.Collections.Generic;

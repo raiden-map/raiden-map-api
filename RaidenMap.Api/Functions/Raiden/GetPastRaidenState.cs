@@ -49,10 +49,12 @@ namespace RaidenMap.Api.Functions.Raiden
 
             log.LogInformation($"{DateTime.UtcNow} INFO Computing Delta.");
             var (delta, aggregates) =
-                await RetrieveDelta(
+                await RaidenHelpers.RetrieveDelta<RaidenAggregate>(
                     nearestRaidenState.Timestamp,
                     timestamp,
-                    client
+                    client,
+                    DatabaseName,
+                    RaidenAggregateCollection
                 );
 
             var raidenStates =
@@ -104,24 +106,6 @@ namespace RaidenMap.Api.Functions.Raiden
                     .FirstOrDefault();
 
             return (state, raidenStates);
-        }
-
-        private static async Task<(List<RaidenAggregate>, IMongoCollection<RaidenAggregate>)> RetrieveDelta(
-            long fromTimestamp, long toTimestamp, MongoClient client)
-        {
-            var raidenAggregates =
-                client
-                    .GetDatabase(DatabaseName)
-                    .GetCollection<RaidenAggregate>(RaidenAggregateCollection);
-
-            var filter = new FilterDefinitionBuilder<RaidenAggregate>()
-                .Where(agg => agg.Timestamp >= fromTimestamp && agg.Timestamp <= toTimestamp);
-
-            var stateCursor = await raidenAggregates.FindAsync(filter);
-
-            var aggregates = await stateCursor.ToListAsync();
-
-            return (aggregates, raidenAggregates);
         }
     }
 }
