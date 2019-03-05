@@ -1,4 +1,4 @@
-openapi: 3.0.0
+﻿openapi: 3.0.0
 
 info:
   title: Raiden Map API
@@ -60,11 +60,17 @@ components:
     RaidenState:
       type: object
       properties:
-        states: 
+        states:
+          description: > 
+            Past snapshots of Raiden's state. 
+            Useful to provide visualization.
           type: array
           items:
             $ref: '#/components/schemas/RaidenAggregate'
-        tokenNetworks: 
+        tokenNetworks:
+          description: > 
+            'Trending' token networks.
+            Will be the list of token networks util the number of token network increases too much.
           type: array
           items:
             $ref: '#/components/schemas/TokenNetworkAggregate'
@@ -80,6 +86,8 @@ components:
           type: string
     
     RaidenAggregate:
+      description: >
+        Represents aggregate stats about raiden at a given point in time
       type: object
       properties:
         tokenNetworksCount: 
@@ -95,11 +103,15 @@ components:
         ethValue: 
           type: number
         tokenNetworksChanges:
+          description: >
+            Changes since previus aggregate
           type: array
           items:
             $ref: '#/components/schemas/TokenNetworkAggregate'
             
     Token:
+      description: >
+        Summary Token's statistics
       type: object
       properties:
         name: 
@@ -139,7 +151,10 @@ components:
       properties:
         tokenNetworkAddress: 
           type: string
-        tokenNetworkStates: 
+        tokenNetworkStates:
+          description: > 
+            Past snapshots of the token network state. 
+            Useful to provide visualization
           type: array
           items:
             $ref: '#/components/schemas/TokenNetworkAggregate'
@@ -151,7 +166,12 @@ components:
           type: number
         stateTimestamp:
           type: number
-        token: 
+        token:
+          description: >
+            Token state at the time of state registration.
+            Useful to provide a summary about the current token state.
+            Redundant, the same data can be found in the latest snapshot
+            found in 'tokenNetworkStates'
           $ref: '#/components/schemas/Token'
         channels: 
           type: array
