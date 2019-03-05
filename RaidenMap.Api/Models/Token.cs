@@ -1,4 +1,5 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
+using System;
 
 namespace RaidenMap.Api.Models
 {
@@ -48,5 +49,46 @@ namespace RaidenMap.Api.Models
 
         [BsonElement("timestamp")]
         public long Timestamp { get; set; }
+
+        public override bool Equals(object obj)
+        {
+            return obj is Token token &&
+                   Name == token.Name &&
+                   Tag == token.Tag &&
+                   ImageUrl == token.ImageUrl &&
+                   ValueUsd == token.ValueUsd &&
+                   ValueEth == token.ValueEth &&
+                   ValueBtc == token.ValueBtc &&
+                   PriceChangeDayUsd == token.PriceChangeDayUsd &&
+                   PriceChangeWeekUsd == token.PriceChangeWeekUsd &&
+                   PriceChangeDayEth == token.PriceChangeDayEth &&
+                   PriceChangeWeekEth == token.PriceChangeWeekEth &&
+                   PriceChangeDayBtc == token.PriceChangeDayBtc &&
+                   PriceChangeWeekBtc == token.PriceChangeWeekBtc &&
+                   MarketCap == token.MarketCap &&
+                   Volume == token.Volume &&
+                   Timestamp == token.Timestamp;
+        }
+
+        public override int GetHashCode()
+        {
+            var hash = new HashCode();
+            hash.Add(Name);
+            hash.Add(Tag);
+            hash.Add(ImageUrl);
+            hash.Add(ValueUsd);
+            hash.Add(ValueEth);
+            hash.Add(ValueBtc);
+            hash.Add(PriceChangeDayUsd);
+            hash.Add(PriceChangeWeekUsd);
+            hash.Add(PriceChangeDayEth);
+            hash.Add(PriceChangeWeekEth);
+            hash.Add(PriceChangeDayBtc);
+            hash.Add(PriceChangeWeekBtc);
+            hash.Add(MarketCap);
+            hash.Add(Volume);
+            hash.Add(Timestamp);
+            return hash.ToHashCode();
+        }
     }
 }

@@ -1,17 +1,16 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
+using System;
+using System.Collections.Generic;
 
 namespace RaidenMap.Api.Models
 {
-    public class TokenNetworkAggregate
+    public class TokenNetworkAggregate : AggregateBase
     {
         [BsonElement("token")]
         public Token Token { get; set; }
 
         [BsonElement("tokenNetworkAddress")]
         public string TokenNetworkAddress { get; set; }
-
-        [BsonElement("timestamp")]
-        public long Timestamp { get; set; }
 
         [BsonElement("channelsCount")]
         public long ChannelsCount { get; set; }
@@ -39,12 +38,33 @@ namespace RaidenMap.Api.Models
 
         public override bool Equals(object obj)
         {
-            if (obj.GetType() != typeof(TokenNetworkAggregate))
-                return false;
+            return obj is TokenNetworkAggregate aggregate &&
+                   EqualityComparer<Token>.Default.Equals(Token, aggregate.Token) &&
+                   TokenNetworkAddress == aggregate.TokenNetworkAddress &&
+                   ChannelsCount == aggregate.ChannelsCount &&
+                   OpenChannels == aggregate.OpenChannels &&
+                   ClosedChannels == aggregate.ClosedChannels &&
+                   SettledChannels == aggregate.SettledChannels &&
+                   AvgChannelDeposit == aggregate.AvgChannelDeposit &&
+                   TotalDeposit == aggregate.TotalDeposit &&
+                   Users == aggregate.Users &&
+                   BlockNumber == aggregate.BlockNumber;
+        }
 
-            var tn = obj as TokenNetworkAggregate;
-
-            return this.TokenNetworkAddress == tn.TokenNetworkAddress;
+        public override int GetHashCode()
+        {
+            var hash = new HashCode();
+            hash.Add(Token);
+            hash.Add(TokenNetworkAddress);
+            hash.Add(ChannelsCount);
+            hash.Add(OpenChannels);
+            hash.Add(ClosedChannels);
+            hash.Add(SettledChannels);
+            hash.Add(AvgChannelDeposit);
+            hash.Add(TotalDeposit);
+            hash.Add(Users);
+            hash.Add(BlockNumber);
+            return hash.ToHashCode();
         }
     }
 }

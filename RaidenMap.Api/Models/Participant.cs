@@ -1,4 +1,6 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
+using System;
+using System.Collections.Generic;
 
 namespace RaidenMap.Api.Models
 {
@@ -15,5 +17,19 @@ namespace RaidenMap.Api.Models
 
         [BsonElement("wantsToClose")]
         public bool? WantsToClose { get; set; }
+
+        public override bool Equals(object obj)
+        {
+            return obj is Participant participant &&
+                   EthAddress == participant.EthAddress &&
+                   Deposit == participant.Deposit &&
+                   WithdrawnAmount == participant.WithdrawnAmount &&
+                   EqualityComparer<bool?>.Default.Equals(WantsToClose, participant.WantsToClose);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(EthAddress, Deposit, WithdrawnAmount, WantsToClose);
+        }
     }
 }

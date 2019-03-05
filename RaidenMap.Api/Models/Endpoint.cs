@@ -1,4 +1,5 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
+using System;
 
 namespace RaidenMap.Api.Models
 {
@@ -18,5 +19,20 @@ namespace RaidenMap.Api.Models
 
         [BsonElement("longitude")]
         public double Longitude { get; set; }
+
+        public override bool Equals(object obj)
+        {
+            return obj is Endpoint endpoint &&
+                   EthAddress == endpoint.EthAddress &&
+                   IpAddress == endpoint.IpAddress &&
+                   State == endpoint.State &&
+                   Latitude == endpoint.Latitude &&
+                   Longitude == endpoint.Longitude;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(EthAddress, IpAddress, State, Latitude, Longitude);
+        }
     }
 }

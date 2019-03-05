@@ -1,8 +1,5 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
@@ -33,6 +30,24 @@ namespace RaidenMap.Api.Models
 
         [BsonElement("id")]
         public string Id { get; set; }
+
+        public override bool Equals(object obj)
+        {
+            return obj is RaidenState state &&
+                   MongoId.Equals(state.MongoId) &&
+                   BlockNumber == state.BlockNumber &&
+                   Timestamp == state.Timestamp &&
+                   EqualityComparer<Uri>.Default.Equals(Twitter, state.Twitter) &&
+                   EqualityComparer<List<RaidenAggregate>>.Default.Equals(States, state.States) &&
+                   EqualityComparer<List<TokenNetworkAggregate>>.Default.Equals(TokenNetworks, state.TokenNetworks) &&
+                   EqualityComparer<List<Endpoint>>.Default.Equals(Endpoints, state.Endpoints) &&
+                   Id == state.Id;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(MongoId, BlockNumber, Timestamp, Twitter, States, TokenNetworks, Endpoints, Id);
+        }
     }
 
 }

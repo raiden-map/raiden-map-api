@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
 namespace RaidenMap.Api.Models
 {
-    public class RaidenAggregate
+    public class RaidenAggregate : AggregateBase
     {
         [BsonId]
         public ObjectId MongoId { get; set; }
@@ -14,9 +15,6 @@ namespace RaidenMap.Api.Models
 
         [BsonElement("usersCount")]
         public long UsersCount { get; set; }
-
-        [BsonElement("timestamp")]
-        public long Timestamp { get; set; }
 
         [BsonElement("blockNumber")]
         public long BlockNumber { get; set; }
@@ -32,5 +30,23 @@ namespace RaidenMap.Api.Models
 
         [BsonElement("tokenNetworksChanges")]
         public List<TokenNetworkAggregate> TokenNetworkChanges { get; set; } = new List<TokenNetworkAggregate>();
+
+        public override bool Equals(object obj)
+        {
+            return obj is RaidenAggregate aggregate &&
+                   MongoId.Equals(aggregate.MongoId) &&
+                   TokenNetworksCount == aggregate.TokenNetworksCount &&
+                   UsersCount == aggregate.UsersCount &&
+                   BlockNumber == aggregate.BlockNumber &&
+                   BtcValue == aggregate.BtcValue &&
+                   EthValue == aggregate.EthValue &&
+                   Id == aggregate.Id &&
+                   EqualityComparer<List<TokenNetworkAggregate>>.Default.Equals(TokenNetworkChanges, aggregate.TokenNetworkChanges);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(MongoId, TokenNetworksCount, UsersCount, BlockNumber, BtcValue, EthValue, Id, TokenNetworkChanges);
+        }
     }
 }
