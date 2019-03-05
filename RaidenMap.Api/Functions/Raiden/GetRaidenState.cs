@@ -6,10 +6,10 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
+using RaidenMap.Api.Common;
 using RaidenMap.Api.Models;
-using RaidenMap.Api.src.Common;
 
-namespace RaidenMap.Api
+namespace RaidenMap.Api.Functions.Raiden
 {
     public static class GetRaidenState
     {
@@ -32,13 +32,13 @@ namespace RaidenMap.Api
             var raidenStates =
                 client
                     .GetDatabase(DatabaseName)
-                    .GetCollection<Raiden>(CollectionName);
+                    .GetCollection<RaidenState>(CollectionName);
 
-            var filter = new FilterDefinitionBuilder<Raiden>();
+            var filter = new FilterDefinitionBuilder<RaidenState>();
 
             var stateCursor = await raidenStates.FindAsync(filter.Empty);
 
-            var state = 
+            var state =
                 stateCursor
                     .ToEnumerable()
                     .OrderByDescending(r => r.BlockNumber)

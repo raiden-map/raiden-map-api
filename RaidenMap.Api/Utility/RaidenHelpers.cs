@@ -1,20 +1,20 @@
-﻿using RaidenMap.Api.Models;
-using RaidenMap.Api.src.Common;
+﻿using RaidenMap.Api.Common;
+using RaidenMap.Api.Models;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace RaidenMap.Api.src.Utility
+namespace RaidenMap.Api.Utility
 {
     public static class RaidenHelpers
     {
-        public static List<TokenNetworkAggregate> GetMergedTokenNetworkAggregates(List<RaidenAggregate> delta, Raiden raidenState)
+        public static List<TokenNetworkAggregate> GetMergedTokenNetworkAggregates(List<RaidenAggregate> delta, RaidenState raidenState)
         {
-            var tokenNetworksState = 
+            var tokenNetworksState =
                 delta.Aggregate(
                     raidenState.TokenNetworks,
                     (list, raidenAggregate) =>
                     {
-                        var oldValues = 
+                        var oldValues =
                             list
                                 .Join(
                                     raidenAggregate.TokenNetworkChanges,

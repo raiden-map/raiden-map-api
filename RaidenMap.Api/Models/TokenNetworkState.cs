@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace RaidenMap.Api.Models
 {
-    public class TokenNetwork
+    public class TokenNetworkState
     {
         [BsonId]
         public ObjectId MongoId { get; set; }

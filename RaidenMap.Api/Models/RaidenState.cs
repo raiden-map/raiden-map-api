@@ -8,7 +8,7 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace RaidenMap.Api.Models
 {
-    public partial class Raiden
+    public partial class RaidenState
     {
         [BsonId]
         public ObjectId MongoId { get; set; }

@@ -5,29 +5,29 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
 using RaidenMap.Api.Models;
-using RaidenMap.Api.src.Common;
-using RaidenMap.Api.src.Utility;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using MongoDB.Bson;
 using System;
+using RaidenMap.Api.Utility;
+using RaidenMap.Api.Common;
 
-namespace RaidenMap.Api
+namespace RaidenMap.Api.Functions.Raiden
 {
     public static class GetPastRaidenState
     {
         private static string DatabaseName =>
-            System.Environment.GetEnvironmentVariable(Constants.DatabaseName);
+            Environment.GetEnvironmentVariable(Constants.DatabaseName);
 
         private static string RaidenCollection =>
-            System.Environment.GetEnvironmentVariable(Constants.RaidenCollectionName);
+            Environment.GetEnvironmentVariable(Constants.RaidenCollectionName);
 
         private static string RaidenAggregateCollection =>
-            System.Environment.GetEnvironmentVariable(Constants.RaidenAggregateCollectionName);
+            Environment.GetEnvironmentVariable(Constants.RaidenAggregateCollectionName);
 
         private static string MongoDbConnectionString =>
-            System.Environment.GetEnvironmentVariable("MongoDbConnectionString");
+            Environment.GetEnvironmentVariable("MongoDbConnectionString");
 
         [FunctionName("GetPastRaidenState")]
         public static async Task<IActionResult> Run(
@@ -85,14 +85,14 @@ namespace RaidenMap.Api
             return new OkObjectResult(nearestRaidenState);
         }
 
-        private static async Task<(Raiden, IMongoCollection<Raiden>)> RetrieveNearestState(long timestamp, MongoClient client)
+        private static async Task<(RaidenState, IMongoCollection<RaidenState>)> RetrieveNearestState(long timestamp, MongoClient client)
         {
             var raidenStates =
                 client
                     .GetDatabase(DatabaseName)
-                    .GetCollection<Raiden>(RaidenCollection);
+                    .GetCollection<RaidenState>(RaidenCollection);
 
-            var filter = new FilterDefinitionBuilder<Raiden>()
+            var filter = new FilterDefinitionBuilder<RaidenState>()
                 .Where(rs => rs.Timestamp <= timestamp);
 
             var stateCursor = await raidenStates.FindAsync(filter);

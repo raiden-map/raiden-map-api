@@ -1,4 +1,4 @@
-﻿namespace RaidenMap.Api.src.Common
+﻿namespace RaidenMap.Api.Common
 {
     public static class Constants
     {
@@ -9,7 +9,7 @@
         public const string TokenNetworkAggregateCollectionName = nameof(TokenNetworkAggregateCollectionName);
         public const string RaidenCollectionName = nameof(RaidenCollectionName);
         public const string RaidenAggregateCollectionName = nameof(RaidenAggregateCollectionName);
-        
-        public const int TimeStampDelta = 30000; // Milliseconds
+
+        public const int TimeStampDelta = 10; // Milliseconds
     }
 }

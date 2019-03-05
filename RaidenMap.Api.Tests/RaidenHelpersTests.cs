@@ -1,6 +1,6 @@
 using NUnit.Framework;
 using RaidenMap.Api.Models;
-using RaidenMap.Api.src.Utility;
+using RaidenMap.Api.Utility;
 using System.Collections.Generic;
 
 namespace RaidenMap.Api.Tests
@@ -11,7 +11,7 @@ namespace RaidenMap.Api.Tests
         [Test, TestCaseSource(typeof(RaidenHelpersTestCases), nameof(RaidenHelpersTestCases.OneOrBothEmpty))]
         public void GetTokenNetworkChanges_WhenCalled_ReturnsCorrectlyMergedList(
             List<RaidenAggregate> delta,
-            Raiden raidenState,
+            RaidenState raidenState,
             List<TokenNetworkAggregate> expected)
         {
             var result = RaidenHelpers.GetMergedTokenNetworkAggregates(delta, raidenState);
@@ -32,8 +32,8 @@ namespace RaidenMap.Api.Tests
                 var emptyDelta = new List<RaidenAggregate>();
                 var delta = NewRaidenAggregateList(tnAddress);
 
-                var emptyState = new Raiden();
-                var state = new Raiden { TokenNetworks = NewTnList(tnAddress) };
+                var emptyState = new RaidenState();
+                var state = new RaidenState { TokenNetworks = NewTnList(tnAddress) };
 
                 var expected = NewTnList(tnAddress);
                 var emptyExpected = new List<TokenNetworkAggregate>();

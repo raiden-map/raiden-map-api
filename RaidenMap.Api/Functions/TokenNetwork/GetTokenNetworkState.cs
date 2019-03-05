@@ -7,9 +7,9 @@ using MongoDB.Driver;
 using RaidenMap.Api.Models;
 using System.Linq;
 using System.Threading.Tasks;
-using RaidenMap.Api.src.Common;
+using RaidenMap.Api.Common;
 
-namespace RaidenMap.Api
+namespace RaidenMap.Api.Functions.TokenNetwork
 {
     public static class GetTokenNetworkState
     {
@@ -33,9 +33,9 @@ namespace RaidenMap.Api
             var tokenNetworks =
                 client
                     .GetDatabase(DatabaseName)
-                    .GetCollection<TokenNetwork>(CollectionName);
+                    .GetCollection<TokenNetworkState>(CollectionName);
 
-            var filter = new FilterDefinitionBuilder<TokenNetwork>()
+            var filter = new FilterDefinitionBuilder<TokenNetworkState>()
                     .Where(tn => tn.TokenNetworkAddress == tnAddress);
 
             var stateCursor = await tokenNetworks.FindAsync(filter);
