@@ -35,7 +35,8 @@ namespace RaidenMap.Api.Functions.TokenNetwork
             string tnAddress,
             long timestamp,
             ILogger log
-        ){
+        )
+        {
             var client = new MongoClient(MongoDbConnectionString);
 
             log.LogInformation($"{DateTime.UtcNow} INFO Retrievieng Nearest State.");
@@ -49,7 +50,7 @@ namespace RaidenMap.Api.Functions.TokenNetwork
 
             log.LogInformation($"{DateTime.UtcNow} INFO Computing Delta.");
             var (delta, aggregates) =
-                await RaidenHelpers.RetrieveDelta<TokenNetworkAggregate>(
+                await RaidenHelpers.RetrieveDelta<TokenNetworkDelta>(
                     nearestTnState.StateTimestamp,
                     timestamp,
                     client,
@@ -59,23 +60,23 @@ namespace RaidenMap.Api.Functions.TokenNetwork
 
             var tnStates =
                 nearestTnState
-                    .TokenNetworkStates
+                    .TokenNetworkDeltas
                     .OrderByDescending(s => s.BlockNumber)
                     .ToList();
 
             var howManyToRemove = delta.Count() - 1;
-            var howManyToRetain = nearestTnState.TokenNetworkStates.Count() - delta.Count();
+            var howManyToRetain = nearestTnState.TokenNetworkDeltas.Count() - delta.Count();
 
             // Remove unneded aggregates
             tnStates.RemoveRange(howManyToRetain, howManyToRemove);
             tnStates.AddRange(delta);
 
+            nearestTnState.TokenNetworkDeltas = tnStates;
+
             nearestTnState.StateBlockNumber = delta.Max(x => x.BlockNumber);
             nearestTnState.StateTimestamp = delta.Max(x => x.Timestamp);
 
-            nearestTnState.TokenNetworkStates = RaidenHelpers.GetMergedTokenNetworkAggregates(delta, nearestTnState);
-
-            nearestTnState.TokenNetworkStates = tnStates;
+            nearestTnState.Channels = RaidenHelpers.GetMergedChannels(delta, nearestTnState);
 
             nearestTnState.MongoId = new ObjectId();
 
@@ -87,17 +88,18 @@ namespace RaidenMap.Api.Functions.TokenNetwork
             return new OkObjectResult(nearestTnState);
         }
 
-        private static async Task<(TokenNetworkState, IMongoCollection<TokenNetworkState>)> RetrieveNearestState(
-            long timestamp, 
-            string tnAddress, 
+        private static async Task<(TokenNetworkSnapshot, IMongoCollection<TokenNetworkSnapshot>)> RetrieveNearestState(
+            long timestamp,
+            string tnAddress,
             MongoClient client
-        ){
+        )
+        {
             var tnStates =
                 client
                     .GetDatabase(DatabaseName)
-                    .GetCollection<TokenNetworkState>(TokenNetworkCollection);
+                    .GetCollection<TokenNetworkSnapshot>(TokenNetworkCollection);
 
-            var filter = new FilterDefinitionBuilder<TokenNetworkState>()
+            var filter = new FilterDefinitionBuilder<TokenNetworkSnapshot>()
                 .Where(tns => tns.StateTimestamp <= timestamp && tns.TokenNetworkAddress == tnAddress);
 
             var stateCursor = await tnStates.FindAsync(filter);
