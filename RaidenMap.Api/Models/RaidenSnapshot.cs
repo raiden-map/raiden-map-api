@@ -5,7 +5,7 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace RaidenMap.Api.Models
 {
-    public partial class RaidenState
+    public partial class RaidenSnapshot
     {
         [BsonId]
         public ObjectId MongoId { get; set; }
@@ -20,10 +20,10 @@ namespace RaidenMap.Api.Models
         public Uri Twitter { get; set; }
 
         [BsonElement("states")]
-        public List<RaidenAggregate> States { get; set; } = new List<RaidenAggregate>();
+        public List<RaidenDelta> States { get; set; } = new List<RaidenDelta>();
 
         [BsonElement("tokenNetworks")]
-        public List<TokenNetworkAggregate> TokenNetworks { get; set; } = new List<TokenNetworkAggregate>();
+        public List<TokenNetworkDelta> TokenNetworks { get; set; } = new List<TokenNetworkDelta>();
 
         [BsonElement("endpoints")]
         public List<Endpoint> Endpoints { get; set; } = new List<Endpoint>();
@@ -33,13 +33,13 @@ namespace RaidenMap.Api.Models
 
         public override bool Equals(object obj)
         {
-            return obj is RaidenState state &&
+            return obj is RaidenSnapshot state &&
                    MongoId.Equals(state.MongoId) &&
                    BlockNumber == state.BlockNumber &&
                    Timestamp == state.Timestamp &&
                    EqualityComparer<Uri>.Default.Equals(Twitter, state.Twitter) &&
-                   EqualityComparer<List<RaidenAggregate>>.Default.Equals(States, state.States) &&
-                   EqualityComparer<List<TokenNetworkAggregate>>.Default.Equals(TokenNetworks, state.TokenNetworks) &&
+                   EqualityComparer<List<RaidenDelta>>.Default.Equals(States, state.States) &&
+                   EqualityComparer<List<TokenNetworkDelta>>.Default.Equals(TokenNetworks, state.TokenNetworks) &&
                    EqualityComparer<List<Endpoint>>.Default.Equals(Endpoints, state.Endpoints) &&
                    Id == state.Id;
         }

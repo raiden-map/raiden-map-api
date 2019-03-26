@@ -49,7 +49,7 @@ namespace RaidenMap.Api.Functions.Raiden
 
             log.LogInformation($"{DateTime.UtcNow} INFO Computing Delta.");
             var (delta, aggregates) =
-                await RaidenHelpers.RetrieveDelta<RaidenAggregate>(
+                await RaidenHelpers.RetrieveDelta<RaidenDelta>(
                     nearestRaidenState.Timestamp,
                     timestamp,
                     client,
@@ -73,7 +73,7 @@ namespace RaidenMap.Api.Functions.Raiden
             nearestRaidenState.BlockNumber = delta.Max(x => x.BlockNumber);
             nearestRaidenState.Timestamp = delta.Max(x => x.Timestamp);
 
-            nearestRaidenState.TokenNetworks = RaidenHelpers.GetMergedTokenNetworkAggregates(delta, nearestRaidenState);
+            nearestRaidenState.TokenNetworks = RaidenHelpers.GetMergedTokenNetworkDeltas(delta, nearestRaidenState);
 
             nearestRaidenState.States = raidenStates;
 
@@ -87,14 +87,14 @@ namespace RaidenMap.Api.Functions.Raiden
             return new OkObjectResult(nearestRaidenState);
         }
 
-        private static async Task<(RaidenState, IMongoCollection<RaidenState>)> RetrieveNearestState(long timestamp, MongoClient client)
+        private static async Task<(RaidenSnapshot, IMongoCollection<RaidenSnapshot>)> RetrieveNearestState(long timestamp, MongoClient client)
         {
             var raidenStates =
                 client
                     .GetDatabase(DatabaseName)
-                    .GetCollection<RaidenState>(RaidenCollection);
+                    .GetCollection<RaidenSnapshot>(RaidenCollection);
 
-            var filter = new FilterDefinitionBuilder<RaidenState>()
+            var filter = new FilterDefinitionBuilder<RaidenSnapshot>()
                 .Where(rs => rs.Timestamp <= timestamp);
 
             var stateCursor = await raidenStates.FindAsync(filter);

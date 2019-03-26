@@ -33,9 +33,9 @@ namespace RaidenMap.Api.Functions.TokenNetwork
             var tokenNetworks =
                 client
                     .GetDatabase(DatabaseName)
-                    .GetCollection<TokenNetworkState>(CollectionName);
+                    .GetCollection<TokenNetworkSnapshot>(CollectionName);
 
-            var filter = new FilterDefinitionBuilder<TokenNetworkState>()
+            var filter = new FilterDefinitionBuilder<TokenNetworkSnapshot>()
                     .Where(tn => tn.TokenNetworkAddress == tnAddress);
 
             var stateCursor = await tokenNetworks.FindAsync(filter);

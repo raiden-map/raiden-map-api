@@ -3,14 +3,14 @@ using System;
 
 namespace RaidenMap.Api.Models
 {
-    public class AggregateBase
+    public class DeltaBase
     {
         [BsonElement("timestamp")]
         public long Timestamp { get; set; }
 
         public override bool Equals(object obj)
         {
-            return obj is AggregateBase @base &&
+            return obj is DeltaBase @base &&
                    Timestamp == @base.Timestamp;
         }
 

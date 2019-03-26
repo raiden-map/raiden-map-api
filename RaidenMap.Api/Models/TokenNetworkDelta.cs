@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace RaidenMap.Api.Models
 {
-    public class TokenNetworkAggregate : AggregateBase
+    public class TokenNetworkDelta : DeltaBase
     {
         [BsonElement("token")]
         public Token Token { get; set; }
@@ -36,9 +36,12 @@ namespace RaidenMap.Api.Models
         [BsonElement("blockNumber")]
         public long BlockNumber { get; set; }
 
+        [BsonElement("modifiedChannels")]
+        public List<Channel> ModifiedChannels { get; set; } = new List<Channel>();
+
         public override bool Equals(object obj)
         {
-            return obj is TokenNetworkAggregate aggregate &&
+            return obj is TokenNetworkDelta aggregate &&
                    EqualityComparer<Token>.Default.Equals(Token, aggregate.Token) &&
                    TokenNetworkAddress == aggregate.TokenNetworkAddress &&
                    ChannelsCount == aggregate.ChannelsCount &&

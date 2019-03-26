@@ -5,7 +5,7 @@ using System;
 
 namespace RaidenMap.Api.Models
 {
-    public class TokenNetworkState
+    public class TokenNetworkSnapshot
     {
         [BsonId]
         public ObjectId MongoId { get; set; }
@@ -14,7 +14,7 @@ namespace RaidenMap.Api.Models
         public string TokenNetworkAddress { get; set; }
 
         [BsonElement("tokenNetworkStates")]
-        public List<TokenNetworkAggregate> TokenNetworkStates { get; set; } = new List<TokenNetworkAggregate>();
+        public List<TokenNetworkDelta> TokenNetworkDeltas { get; set; } = new List<TokenNetworkDelta>();
 
         [BsonElement("creationBlockNumber")]
         public long CreationBlockNumber { get; set; }
@@ -45,10 +45,10 @@ namespace RaidenMap.Api.Models
 
         public override bool Equals(object obj)
         {
-            return obj is TokenNetworkState state &&
+            return obj is TokenNetworkSnapshot state &&
                    MongoId.Equals(state.MongoId) &&
                    TokenNetworkAddress == state.TokenNetworkAddress &&
-                   EqualityComparer<List<TokenNetworkAggregate>>.Default.Equals(TokenNetworkStates, state.TokenNetworkStates) &&
+                   EqualityComparer<List<TokenNetworkDelta>>.Default.Equals(TokenNetworkDeltas, state.TokenNetworkDeltas) &&
                    CreationBlockNumber == state.CreationBlockNumber &&
                    CreationTimestamp == state.CreationTimestamp &&
                    StateBlockNumber == state.StateBlockNumber &&
@@ -65,7 +65,7 @@ namespace RaidenMap.Api.Models
             var hash = new HashCode();
             hash.Add(MongoId);
             hash.Add(TokenNetworkAddress);
-            hash.Add(TokenNetworkStates);
+            hash.Add(TokenNetworkDeltas);
             hash.Add(CreationBlockNumber);
             hash.Add(CreationTimestamp);
             hash.Add(StateBlockNumber);

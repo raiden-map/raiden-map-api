@@ -5,7 +5,7 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace RaidenMap.Api.Models
 {
-    public class RaidenAggregate : AggregateBase
+    public class RaidenDelta : DeltaBase
     {
         [BsonId]
         public ObjectId MongoId { get; set; }
@@ -29,11 +29,11 @@ namespace RaidenMap.Api.Models
         public string Id { get; set; }
 
         [BsonElement("tokenNetworksChanges")]
-        public List<TokenNetworkAggregate> TokenNetworkChanges { get; set; } = new List<TokenNetworkAggregate>();
+        public List<TokenNetworkDelta> TokenNetworkChanges { get; set; } = new List<TokenNetworkDelta>();
 
         public override bool Equals(object obj)
         {
-            return obj is RaidenAggregate aggregate &&
+            return obj is RaidenDelta aggregate &&
                    MongoId.Equals(aggregate.MongoId) &&
                    TokenNetworksCount == aggregate.TokenNetworksCount &&
                    UsersCount == aggregate.UsersCount &&
@@ -41,7 +41,7 @@ namespace RaidenMap.Api.Models
                    BtcValue == aggregate.BtcValue &&
                    EthValue == aggregate.EthValue &&
                    Id == aggregate.Id &&
-                   EqualityComparer<List<TokenNetworkAggregate>>.Default.Equals(TokenNetworkChanges, aggregate.TokenNetworkChanges);
+                   EqualityComparer<List<TokenNetworkDelta>>.Default.Equals(TokenNetworkChanges, aggregate.TokenNetworkChanges);
         }
 
         public override int GetHashCode()

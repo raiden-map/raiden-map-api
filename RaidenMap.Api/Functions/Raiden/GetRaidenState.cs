@@ -32,9 +32,9 @@ namespace RaidenMap.Api.Functions.Raiden
             var raidenStates =
                 client
                     .GetDatabase(DatabaseName)
-                    .GetCollection<RaidenState>(CollectionName);
+                    .GetCollection<RaidenSnapshot>(CollectionName);
 
-            var filter = new FilterDefinitionBuilder<RaidenState>();
+            var filter = new FilterDefinitionBuilder<RaidenSnapshot>();
 
             var stateCursor = await raidenStates.FindAsync(filter.Empty);
 
