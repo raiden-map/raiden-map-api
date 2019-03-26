@@ -57,7 +57,7 @@ components:
         wantsToClose: 
           type: boolean 
     
-    RaidenState:
+    RaidenSnapshot:
       type: object
       properties:
         states:
@@ -66,14 +66,14 @@ components:
             Useful to provide visualization.
           type: array
           items:
-            $ref: '#/components/schemas/RaidenAggregate'
+            $ref: '#/components/schemas/RaidenDelta'
         tokenNetworks:
           description: > 
             'Trending' token networks.
             Will be the list of token networks util the number of token network increases too much.
           type: array
           items:
-            $ref: '#/components/schemas/TokenNetworkAggregate'
+            $ref: '#/components/schemas/TokenNetworkDelta'
         endpoints: 
           type: array
           items: 
@@ -85,7 +85,7 @@ components:
         twitter:
           type: string
     
-    RaidenAggregate:
+    RaidenDelta:
       description: >
         Represents aggregate stats about raiden at a given point in time
       type: object
@@ -107,7 +107,7 @@ components:
             Changes since previus aggregate
           type: array
           items:
-            $ref: '#/components/schemas/TokenNetworkAggregate'
+            $ref: '#/components/schemas/TokenNetworkDelta'
             
     Token:
       description: >
@@ -146,18 +146,21 @@ components:
         timestamp:
           type: number
           
-    TokenNetworkState:
+    TokenNetworkSnapshot:
+      description: >
+        Represents aggregate stats about a token network at a given point in time.
+        Contains necessary information to show how the network evolved in recent times (compared to `stateTimestamp`)
       type: object
       properties:
         tokenNetworkAddress: 
           type: string
-        tokenNetworkStates:
+        tokenNetworkDeltas:
           description: > 
             Past snapshots of the token network state. 
             Useful to provide visualization
           type: array
           items:
-            $ref: '#/components/schemas/TokenNetworkAggregate'
+            $ref: '#/components/schemas/TokenNetworkDelta'
         creationBlockNumber: 
           type: number
         creationTimestamp: 
@@ -171,7 +174,7 @@ components:
             Token state at the time of state registration.
             Useful to provide a summary about the current token state.
             Redundant, the same data can be found in the latest snapshot
-            found in 'tokenNetworkStates'
+            found in 'TokenNetworkSnapshots'
           $ref: '#/components/schemas/Token'
         channels: 
           type: array
@@ -185,7 +188,10 @@ components:
           type: string
           nullable: true
 
-    TokenNetworkAggregate:
+    TokenNetworkDelta:
+      description: >
+        Represents aggregate stats about a token network at a given point in time.
+        It's called `Delta` due to the nature of the `modifiedChannels` attribute.
       type: object
       properties:
         token:
@@ -210,6 +216,12 @@ components:
           type: number
         blockNumber: 
           type: number
+        modifiedChannels:
+          description: >
+            State of channels of which the state has changed since the latest saved TokenNetworkDelta
+          type: array
+          items:
+            $ref: '#/components/schemas/Channel'
 
 
   responses:
@@ -234,7 +246,7 @@ paths:
           content:
             application/json:
              schema:
-              $ref: '#/components/schemas/RaidenState'
+              $ref: '#/components/schemas/RaidenSnapshot'
   
   /raiden/{timestamp}:
     get:
@@ -255,7 +267,7 @@ paths:
           content:
             application/json:
              schema:
-              $ref: '#/components/schemas/RaidenState'
+              $ref: '#/components/schemas/RaidenSnapshot'
   
   /tokenNetwork/{ethAddress}:
     get:
@@ -276,7 +288,7 @@ paths:
           content:
             application/json:
              schema:
-              $ref: '#/components/schemas/TokenNetworkState'
+              $ref: '#/components/schemas/TokenNetworkSnapshot'
               
         '404':
           description: >
@@ -314,7 +326,7 @@ paths:
           content:
             application/json:
              schema:
-              $ref: '#/components/schemas/TokenNetworkState'
+              $ref: '#/components/schemas/TokenNetworkSnapshot'
               
         '404':
           description: >
