@@ -9,7 +9,7 @@ namespace RaidenMap.Api.Utility
 {
     public static class RaidenHelpers
     {
-        public static List<TokenNetworkAggregate> GetMergedTokenNetworkAggregates(List<RaidenAggregate> delta, RaidenState raidenState)
+        public static List<TokenNetworkDelta> GetMergedTokenNetworkDeltas(List<RaidenDelta> delta, RaidenSnapshot raidenState)
         {
             var tokenNetworksStates =
                 delta.Aggregate(
@@ -17,17 +17,41 @@ namespace RaidenMap.Api.Utility
                     (list, raidenAggregate) => JoinTnAggregates(list, raidenAggregate.TokenNetworkChanges)
                 );
 
-            return tokenNetworksStates ?? new List<TokenNetworkAggregate>();
+            return tokenNetworksStates ?? new List<TokenNetworkDelta>();
         }
 
-        public static List<TokenNetworkAggregate> GetMergedTokenNetworkAggregates(List<TokenNetworkAggregate> delta, TokenNetworkState tnState)
+        public static List<TokenNetworkDelta> GetMergedTokenNetworkDeltas(List<TokenNetworkDelta> delta, TokenNetworkSnapshot tnState)
         {
-            var tokenNetworksStates = JoinTnAggregates(tnState.TokenNetworkStates, delta);
+            var tokenNetworksStates = JoinTnAggregates(tnState.TokenNetworkDeltas, delta);
 
-            return tokenNetworksStates ?? new List<TokenNetworkAggregate>();
+            return tokenNetworksStates ?? new List<TokenNetworkDelta>();
         }
 
-        private static List<TokenNetworkAggregate> JoinTnAggregates(List<TokenNetworkAggregate> aggs, List<TokenNetworkAggregate> newAggs)
+        public static List<Channel> GetMergedChannels(List<TokenNetworkDelta> deltas, TokenNetworkSnapshot snap)
+        {
+            var modifiedChannels =
+                deltas
+                    .Aggregate(
+                        snap.Channels,
+                        (channels, delta) => MergeChannels(channels, delta.ModifiedChannels)
+                    );
+
+            return modifiedChannels ?? new List<Channel>();
+        }
+
+        private static List<Channel> MergeChannels(List<Channel> oldChannels, List<Channel> newChannels)
+        {
+            oldChannels
+                .RemoveAll(
+                    ch => newChannels.Any(x => x.ChannelId == ch.ChannelId)
+                );
+
+            oldChannels.AddRange(newChannels);
+
+            return oldChannels;
+        }
+
+        private static List<TokenNetworkDelta> JoinTnAggregates(List<TokenNetworkDelta> aggs, List<TokenNetworkDelta> newAggs)
         {
             var oldValues =
                 aggs
@@ -35,7 +59,7 @@ namespace RaidenMap.Api.Utility
                         newAggs,
                         inner => inner.TokenNetworkAddress,
                         outer => outer.TokenNetworkAddress,
-                        (inner, outer) => outer ?? inner ?? new TokenNetworkAggregate()
+                        (inner, outer) => outer ?? inner ?? new TokenNetworkDelta()
                     );
 
 
@@ -48,14 +72,14 @@ namespace RaidenMap.Api.Utility
         }
 
         public static async Task<(List<T>, IMongoCollection<T>)> RetrieveDelta<T>(
-            long fromTimestamp, 
-            long toTimestamp, 
-            MongoClient client, 
+            long fromTimestamp,
+            long toTimestamp,
+            MongoClient client,
             string dbName,
             string aggCollectionName
-        ) where T : AggregateBase
+        ) where T : DeltaBase
         {
-            var tnAggregates =
+            var aggregatesCollection =
                 client
                     .GetDatabase(dbName)
                     .GetCollection<T>(aggCollectionName);
@@ -63,11 +87,11 @@ namespace RaidenMap.Api.Utility
             var filter = new FilterDefinitionBuilder<T>()
                 .Where(agg => agg.Timestamp >= fromTimestamp && agg.Timestamp <= toTimestamp);
 
-            var aggCursor = await tnAggregates.FindAsync(filter);
+            var aggCursor = await aggregatesCollection.FindAsync(filter);
 
             var aggregates = await aggCursor.ToListAsync();
 
-            return (aggregates, tnAggregates);
+            return (aggregates, aggregatesCollection);
         }
 
         public static bool TimestampsAreClose(long t1, long t2) =>
