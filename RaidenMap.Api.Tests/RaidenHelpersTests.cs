@@ -9,12 +9,12 @@ namespace RaidenMap.Api.Tests
     public class RaidenHelpersTests
     {
         [Test, TestCaseSource(typeof(RaidenHelpersTestCases), nameof(RaidenHelpersTestCases.OneOrBothEmpty))]
-        public void GetTokenNetworkChanges_WhenCalled_ReturnsCorrectlyMergedList(
-            List<RaidenAggregate> delta,
-            RaidenState raidenState,
-            List<TokenNetworkAggregate> expected)
+        public void GetMergedTokenNetworkDeltas_WhenCalled_ReturnsCorrectlyMergedList(
+            List<RaidenDelta> delta,
+            RaidenSnapshot RaidenSnapshot,
+            List<TokenNetworkDelta> expected)
         {
-            var result = RaidenHelpers.GetMergedTokenNetworkAggregates(delta, raidenState);
+            var result = RaidenHelpers.GetMergedTokenNetworkDeltas(delta, RaidenSnapshot);
 
             Assert.That(result, Is.EquivalentTo(expected));
         }
@@ -29,14 +29,14 @@ namespace RaidenMap.Api.Tests
             {
                 var tnAddress = "0x33";
 
-                var emptyDelta = new List<RaidenAggregate>();
-                var delta = NewRaidenAggregateList(tnAddress);
+                var emptyDelta = new List<RaidenDelta>();
+                var delta = NewRaidenDeltaList(tnAddress);
 
-                var emptyState = new RaidenState();
-                var state = new RaidenState { TokenNetworks = NewTnList(tnAddress) };
+                var emptyState = new RaidenSnapshot();
+                var state = new RaidenSnapshot { TokenNetworks = NewTnList(tnAddress) };
 
                 var expected = NewTnList(tnAddress);
-                var emptyExpected = new List<TokenNetworkAggregate>();
+                var emptyExpected = new List<TokenNetworkDelta>();
 
                 yield return new TestCaseData(emptyDelta, emptyState, emptyExpected);
                 yield return new TestCaseData(delta, emptyState, expected);
@@ -44,14 +44,14 @@ namespace RaidenMap.Api.Tests
             }
         }
 
-        private static TokenNetworkAggregate NewTnAggregate(string tnAddress)
-            => new TokenNetworkAggregate { TokenNetworkAddress = tnAddress };
+        private static TokenNetworkDelta NewTnAggregate(string tnAddress)
+            => new TokenNetworkDelta { TokenNetworkAddress = tnAddress };
 
-        private static List<TokenNetworkAggregate> NewTnList(string tnAddress)
-            => new List<TokenNetworkAggregate> { NewTnAggregate(tnAddress) };
+        private static List<TokenNetworkDelta> NewTnList(string tnAddress)
+            => new List<TokenNetworkDelta> { NewTnAggregate(tnAddress) };
 
-        private static List<RaidenAggregate> NewRaidenAggregateList(string tnAddress)
-            => new List<RaidenAggregate> { new RaidenAggregate { TokenNetworkChanges = NewTnList(tnAddress) } };
+        private static List<RaidenDelta> NewRaidenDeltaList(string tnAddress)
+            => new List<RaidenDelta> { new RaidenDelta { TokenNetworkChanges = NewTnList(tnAddress) } };
     }
 
 }
